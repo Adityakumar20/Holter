@@ -66,16 +66,12 @@ const overlayText = document.getElementById('overlayText');
 
 // --- BLE Core ---
 async function connect() {
+    const VERSION = "1.1-DEBUG";
     try {
-        log('Requesting Bluetooth Device...');
-        // Broadening filters to find unconfigured or renamed devices
+        log(`[VER ${VERSION}] Requesting Bluetooth Device...`);
+        // switching to acceptAllDevices to find EVERYTHING for debugging
         bleDevice = await navigator.bluetooth.requestDevice({
-            acceptAllDevices: false,
-            filters: [
-                { namePrefix: 'RN' },
-                { namePrefix: 'Holter' },
-                { namePrefix: 'ECG' }
-            ],
+            acceptAllDevices: true,
             optionalServices: [RN4871_SERVICE_UUID]
         });
 
