@@ -39,8 +39,8 @@ const ecgChart = new Chart(ctx, {
         animation: false,
         scales: {
             x: { display: false },
-            y: { 
-                suggestedMin: 1100, 
+            y: {
+                suggestedMin: 1100,
                 suggestedMax: 1400,
                 grid: { color: 'rgba(255,255,255,0.05)' },
                 ticks: { color: '#888' }
@@ -68,8 +68,14 @@ const overlayText = document.getElementById('overlayText');
 async function connect() {
     try {
         log('Requesting Bluetooth Device...');
+        // Broadening filters to find unconfigured or renamed devices
         bleDevice = await navigator.bluetooth.requestDevice({
-            filters: [{ namePrefix: 'RN' }, { namePrefix: 'Holter' }],
+            acceptAllDevices: false,
+            filters: [
+                { namePrefix: 'RN' },
+                { namePrefix: 'Holter' },
+                { namePrefix: 'ECG' }
+            ],
             optionalServices: [RN4871_SERVICE_UUID]
         });
 
@@ -93,7 +99,8 @@ async function connect() {
 
     } catch (error) {
         console.error('Connection failed:', error);
-        alert('Bluetooth Connection Failed! Check permissions and location/BT status.');
+        // Showing detailed error to help the user debug
+        alert(`Bluetooth Error: ${error.message}\n\nTips:\n1. Location (GPS) ON karein.\n2. Bluetooth permissions check karein.\n3. Make sure RN4871 is powered.`);
     }
 }
 
@@ -173,7 +180,7 @@ function parseSessionItem(line) {
 function addSessionToUI(id, bytes, time) {
     // Clear initial empty state
     if (sessionList.querySelector('.empty-state')) sessionList.innerHTML = '';
-    
+
     // Check if item already exists
     if (document.getElementById(`sess-${id}`)) return;
 
