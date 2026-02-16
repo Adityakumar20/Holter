@@ -66,13 +66,13 @@ const overlayText = document.getElementById('overlayText');
 
 // --- BLE Core ---
 async function connect() {
-    const VERSION = "1.1-DEBUG";
+    const VERSION = "1.3-STABLE";
     try {
         log(`[VER ${VERSION}] Requesting Bluetooth Device...`);
-        // switching to acceptAllDevices to find EVERYTHING for debugging
+        // We will accept any device to ensure it shows up in the scan list
         bleDevice = await navigator.bluetooth.requestDevice({
             acceptAllDevices: true,
-            optionalServices: [RN4871_SERVICE_UUID]
+            optionalServices: [RN4871_SERVICE_UUID, '0000180a-0000-1000-8000-00805f9b34fb'] // Transparent UART + Dev Info
         });
 
         bleDevice.addEventListener('gattserverdisconnected', onDisconnected);
